@@ -1,4 +1,5 @@
 // src/middleware/command-preprocessor.js
+const OpenAI = require('openai');
 const axios = require("axios");
 
 async function preprocessCommand(command, availableCommands, messages) {
@@ -58,9 +59,12 @@ function checkValidCommand(command, availableCommands) {
     return isGlobalCommand;
 }
 
+
 async function correctCommandWithLLM(command, availableCommands, messages) {
-    const baseUrl = "https://text.octoai.run/v1/chat/completions";
-    const apiKey = process.env.OCTOAI_API_KEY;
+    const client = new OpenAI({
+        baseURL: 'https://api.studio.nebius.ai/v1/',
+        apiKey: process.env.NEBIUS_API_KEY,
+    });
 
     const promptMessages = [
         {
@@ -77,23 +81,13 @@ async function correctCommandWithLLM(command, availableCommands, messages) {
     ];
 
     try {
-        const response = await axios.post(
-            baseUrl,
-            {
-                model: "meta-llama-3.1-405b-instruct",
-                messages: promptMessages,
-                temperature: 0,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${apiKey}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+        const completion = await client.chat.completions.create({
+            temperature: 0,
+            model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
+            messages: promptMessages,
+        });
 
-        const assistantResponse = response.data.choices[0].message.content;
-        // console.log("LLM PREPROCESSOR RESPONSE", assistantResponse);
+        const assistantResponse = completion.choices[0].message.content;
         const parsedResponse = JSON.parse(assistantResponse);
 
         return {
@@ -101,7 +95,7 @@ async function correctCommandWithLLM(command, availableCommands, messages) {
             helpText: parsedResponse.helpText,
         };
     } catch (error) {
-        console.error("Error calling OctoAI:", error);
+        console.error("Error calling Nebius:", error);
         return {
             processedCommand: command,
             helpText: "Unable to process command. Please try again.",

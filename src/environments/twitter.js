@@ -14,7 +14,7 @@ function formatTweet(tweet) {
 
 class Twitter {
     constructor() {
-        this.baseUrl = "https://truth-terminal-twitter-proxy.replit.app/"; // TODO: we'll OSS this soon - this is middleware which holds Twitter auth and caches tweets
+        this.baseUrl = "http://127.0.0.1:5000/";
         this.apiKey = process.env.TWITTER_PROXY_API_KEY;
     }
 

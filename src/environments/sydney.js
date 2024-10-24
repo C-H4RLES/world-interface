@@ -3,8 +3,8 @@ const { OpenAI } = require("openai");
 class Sydney {
     constructor() {
         this.openai = new OpenAI({
-            apiKey: process.env.OCTOAI_API_KEY,
-            baseURL: "https://text.octoai.run/v1",
+            apiKey: process.env.NEBIUS_API_KEY,
+            baseURL: "https://api.studio.nebius.ai/v1/",
         });
     }
 
@@ -46,7 +46,7 @@ class Sydney {
 
         try {
             const response = await this.openai.chat.completions.create({
-                model: "meta-llama-3.1-405b-instruct",
+                model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
                 max_tokens: 400,
                 temperature: 0.7,
                 frequency_penalty: 0.1,

@@ -4,6 +4,7 @@ const Twitter = require("./environments/twitter");
 //const Search = require("./environments/search");
 const Sydney = require("./environments/sydney");
 const WebBrowser = require("./environments/web_browser");
+const WalletEnvironment = require("./environments/wallet");
 
 class EnvironmentRegistry {
     constructor() {
@@ -14,6 +15,7 @@ class EnvironmentRegistry {
            // search: new Search(),
             sydney: new Sydney(),
             web: new WebBrowser(),
+            wallet: new WalletEnvironment(),
         };
     }
 
